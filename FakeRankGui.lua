@@ -4,10 +4,11 @@ local LocalPlayer = Players.LocalPlayer
 -- GUI oluştur
 local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
 ScreenGui.Name = "FakeRankGui"
+
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 300, 0, 230)
-MainFrame.Position = UDim2.new(0.5, -150, 0.5, -115)
-MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.Size = UDim2.new(0, 280, 0, 320)
+MainFrame.Position = UDim2.new(0.5, -140, 0.5, -160)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Draggable = true
@@ -23,13 +24,15 @@ Close.Position = UDim2.new(1, -30, 0, 5)
 Close.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
 Close.Text = "X"
 Close.TextColor3 = Color3.fromRGB(255,255,255)
+Close.Font = Enum.Font.GothamBold
+Close.TextSize = 14
 Close.MouseButton1Click:Connect(function()
 	ScreenGui:Destroy()
 end)
 
 -- Başlık
 local Title = Instance.new("TextLabel", MainFrame)
-Title.Size = UDim2.new(1, -35, 0, 30)
+Title.Size = UDim2.new(1, -40, 0, 30)
 Title.Position = UDim2.new(0, 10, 0, 5)
 Title.Text = "TaØsØ Hub - Rütbe Paneli"
 Title.TextColor3 = Color3.fromRGB(255,255,255)
@@ -37,6 +40,19 @@ Title.BackgroundTransparency = 1
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 16
 Title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Scrollable alan
+local ScrollFrame = Instance.new("ScrollingFrame", MainFrame)
+ScrollFrame.Position = UDim2.new(0, 10, 0, 40)
+ScrollFrame.Size = UDim2.new(1, -20, 1, -50)
+ScrollFrame.BackgroundTransparency = 1
+ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollFrame.ScrollBarThickness = 4
+ScrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
+local Layout = Instance.new("UIListLayout", ScrollFrame)
+Layout.SortOrder = Enum.SortOrder.LayoutOrder
+Layout.Padding = UDim.new(0, 4)
 
 -- Rütbeler ve renkleri
 local ranks = {
@@ -50,32 +66,25 @@ local ranks = {
     ["OF-9 Orgeneral"] = Color3.fromRGB(200, 50, 50)
 }
 
--- UIListLayout
-local Layout = Instance.new("UIListLayout")
-Layout.Parent = MainFrame
-Layout.SortOrder = Enum.SortOrder.LayoutOrder
-Layout.Padding = UDim.new(0, 4)
-Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-Layout.VerticalAlignment = Enum.VerticalAlignment.Top
-Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-	MainFrame.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y)
-end)
-
 -- Rütbe butonları
 for rank, color in pairs(ranks) do
-	local Button = Instance.new("TextButton", MainFrame)
-	Button.Size = UDim2.new(1, -20, 0, 25)
-	Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	local Button = Instance.new("TextButton", ScrollFrame)
+	Button.Size = UDim2.new(1, 0, 0, 30)
+	Button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 	Button.Text = rank
 	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
 	Button.Font = Enum.Font.Gotham
 	Button.TextSize = 14
+	Button.AutoButtonColor = true
+
 	Button.MouseButton1Click:Connect(function()
 		LocalPlayer.NameDisplayDistance = 100
 		LocalPlayer.DisplayName = rank
-		LocalPlayer.Character.Head.NameTag.TextColor3 = color
+		if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Head") and LocalPlayer.Character.Head:FindFirstChild("NameTag") then
+			LocalPlayer.Character.Head.NameTag.TextColor3 = color
+		end
 	end)
 
 	local btnCorner = Instance.new("UICorner", Button)
-	btnCorner.CornerRadius = UDim.new(0, 4)
+	btnCorner.CornerRadius = UDim.new(0, 6)
 end
