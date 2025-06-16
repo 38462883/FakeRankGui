@@ -1,96 +1,81 @@
--- TAØSØ Hub | Rütbe GUI
 local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+local LocalPlayer = Players.LocalPlayer
 
--- GUI varsa kaldır
-if player.PlayerGui:FindFirstChild("TAOSOGui") then
-    player.PlayerGui:FindFirstChild("TAOSOGui"):Destroy()
-end
+-- GUI oluştur
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+ScreenGui.Name = "FakeRankGui"
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 300, 0, 230)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -115)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
 
--- Ana GUI
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "TAOSOGui"
-screenGui.ResetOnSpawn = false
-screenGui.Parent = player:WaitForChild("PlayerGui")
+-- UICorner
+local corner = Instance.new("UICorner", MainFrame)
+corner.CornerRadius = UDim.new(0, 8)
 
--- Ana Frame
-local mainFrame = Instance.new("Frame")
-mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 300, 0, 400)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
-mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-mainFrame.BorderSizePixel = 0
-mainFrame.Parent = screenGui
+-- Kapat butonu
+local Close = Instance.new("TextButton", MainFrame)
+Close.Size = UDim2.new(0, 25, 0, 25)
+Close.Position = UDim2.new(1, -30, 0, 5)
+Close.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+Close.Text = "X"
+Close.TextColor3 = Color3.fromRGB(255,255,255)
+Close.MouseButton1Click:Connect(function()
+	ScreenGui:Destroy()
+end)
 
--- UICorner (Köşeleri yumuşat)
-local corner = Instance.new("UICorner", mainFrame)
-corner.CornerRadius = UDim.new(0, 12)
+-- Başlık
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -35, 0, 30)
+Title.Position = UDim2.new(0, 10, 0, 5)
+Title.Text = "TaØsØ Hub - Rütbe Paneli"
+Title.TextColor3 = Color3.fromRGB(255,255,255)
+Title.BackgroundTransparency = 1
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 16
+Title.TextXAlignment = Enum.TextXAlignment.Left
 
--- Title
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 50)
-title.BackgroundTransparency = 1
-title.Text = "TAØSØ Rütbe Paneli"
-title.Font = Enum.Font.GothamBold
-title.TextSize = 20
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Parent = mainFrame
-
--- UIListLayout
-local layout = Instance.new("UIListLayout")
-layout.Padding = UDim.new(0, 6)
-layout.FillDirection = Enum.FillDirection.Vertical
-layout.SortOrder = Enum.SortOrder.LayoutOrder
-layout.Parent = mainFrame
-
--- Rütbeler
+-- Rütbeler ve renkleri
 local ranks = {
-    ["OF-2"] = {"Yüzbaşı", Color3.fromRGB(255, 165, 0)}, -- Turuncu
-    ["OF-3"] = {"Binbaşı", Color3.fromRGB(255, 165, 0)},
-    ["OF-4"] = {"Yarbay",  Color3.fromRGB(255, 165, 0)},
-    ["OF-5"] = {"Albay",   Color3.fromRGB(255, 165, 0)},
-    ["OF-6"] = {"Tuğgeneral", Color3.fromRGB(200, 50, 50)}, -- Kırmızı
-    ["OF-7"] = {"Tümgeneral", Color3.fromRGB(200, 50, 50)},
-    ["OF-8"] = {"Korgeneral", Color3.fromRGB(200, 50, 50)},
-    ["OF-9"] = {"Orgeneral",  Color3.fromRGB(200, 50, 50)},
+    ["OF-2 Yüzbaşı"] = Color3.fromRGB(255, 165, 0),
+    ["OF-3 Binbaşı"] = Color3.fromRGB(255, 165, 0),
+    ["OF-4 Yarbay"] = Color3.fromRGB(255, 165, 0),
+    ["OF-5 Albay"] = Color3.fromRGB(255, 165, 0),
+    ["OF-6 Tuğgeneral"] = Color3.fromRGB(200, 50, 50),
+    ["OF-7 Tümgeneral"] = Color3.fromRGB(200, 50, 50),
+    ["OF-8 Korgeneral"] = Color3.fromRGB(200, 50, 50),
+    ["OF-9 Orgeneral"] = Color3.fromRGB(200, 50, 50)
 }
 
--- Fonksiyon: Rütbe Ekle
-local function addRankButton(code, name, nameColor)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -20, 0, 35)
-    btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-    btn.Text = code .. " - " .. name
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 16
-    btn.TextColor3 = nameColor
-    btn.Parent = mainFrame
+-- UIListLayout
+local Layout = Instance.new("UIListLayout")
+Layout.Parent = MainFrame
+Layout.SortOrder = Enum.SortOrder.LayoutOrder
+Layout.Padding = UDim.new(0, 4)
+Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+Layout.VerticalAlignment = Enum.VerticalAlignment.Top
+Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	MainFrame.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y)
+end)
 
-    btn.MouseButton1Click:Connect(function()
-        -- İsim rengini değiştir
-        player.CharacterAppearanceLoaded:Wait()
-        local nameGui = player:FindFirstChild("NameDisplay")
-        if not nameGui then
-            nameGui = Instance.new("BillboardGui", player)
-            nameGui.Name = "NameDisplay"
-            nameGui.Size = UDim2.new(0, 200, 0, 50)
-            nameGui.AlwaysOnTop = false
-            nameGui.StudsOffset = Vector3.new(0, 3, 0)
-            nameGui.Adornee = player.Character:WaitForChild("Head")
-            local nameLabel = Instance.new("TextLabel", nameGui)
-            nameLabel.Size = UDim2.new(1, 0, 1, 0)
-            nameLabel.BackgroundTransparency = 1
-            nameLabel.Text = player.Name .. " - " .. code
-            nameLabel.TextColor3 = nameColor
-            nameLabel.TextScaled = true
-            nameLabel.Font = Enum.Font.GothamBold
-        end
-    end)
-end
+-- Rütbe butonları
+for rank, color in pairs(ranks) do
+	local Button = Instance.new("TextButton", MainFrame)
+	Button.Size = UDim2.new(1, -20, 0, 25)
+	Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	Button.Text = rank
+	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Button.Font = Enum.Font.Gotham
+	Button.TextSize = 14
+	Button.MouseButton1Click:Connect(function()
+		LocalPlayer.NameDisplayDistance = 100
+		LocalPlayer.DisplayName = rank
+		LocalPlayer.Character.Head.NameTag.TextColor3 = color
+	end)
 
--- Rütbe butonlarını ekle
-for code, data in pairs(ranks) do
-    local name = data[1]
-    local color = data[2]
-    addRankButton(code, name, color)
+	local btnCorner = Instance.new("UICorner", Button)
+	btnCorner.CornerRadius = UDim.new(0, 4)
 end
