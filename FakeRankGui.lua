@@ -19,13 +19,13 @@ local Ranks = {
     ["Of-6 Tuğgeneral"] = {isimRenk = Color3.fromRGB(255, 0, 0), rütbeRenk = Color3.fromRGB(255, 255, 255)},
     ["Of-7 Tümgeneral"] = {isimRenk = Color3.fromRGB(255, 0, 0), rütbeRenk = Color3.fromRGB(255, 255, 255)},
     ["Of-8 Korgeneral"] = {isimRenk = Color3.fromRGB(255, 0, 0), rütbeRenk = Color3.fromRGB(255, 255, 255)},
-    ["Of-9 Orgeneral"] = {isimRenk = Color3.fromRGB(255, 0, 0), rütbeRenk = Color3.fromRGB(255, 255, 255)},
+    ["Of-9 Orgeneral"] = {isimRenk = Color3.fromRGB(255, 0, 0), rütbeRenk = Color3.fromRGB(195, 195, 195)},
 }
 
 -- Takım tanımları
 local Teams = {
     ["Jandarma"] = Color3.fromRGB(0, 0, 139),
-    ["Sınır Müfettişleri"] = Color3.fromRGB(128, 128, 128),
+    ["Sınır Müfettişleri"] = Color3.fromRGB(195, 195, 195),
     ["Askeri İnzibat"] = Color3.fromRGB(0, 0, 0),
     ["Ordu Subayları"] = Color3.fromRGB(255, 0, 0),
 }
